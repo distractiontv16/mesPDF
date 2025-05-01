@@ -1,13 +1,30 @@
 {
-  "codeAcces": "bd2024",
+  "codeAcces": "bd8945",
   "bds": [
+    {
+      "titre": "Mom & me 5",
+      "url": "https://online.pubhtml5.com/bozze/xivr/"
+    },
     {
       "titre": "Mom & me 5-2",
       "url": "https://online.pubhtml5.com/bozze/vtgx/"
     },
     {
-      "titre": "Exemple BD 2",
+      "titre": "Mom & me 6",
+      "url": "https://online.pubhtml5.com/bozze/mgsr/"
+    },
+    {
+      "titre": "Mom & me 6-2",
       "url": "https://online.pubhtml5.com/bozze/dzfp/"
+    },
+    {
+      "titre": "Mom & me 7",
+      "url": "https://online.pubhtml5.com/bozze/jepx/"
     }
   ]
-} 
+}
+
+
+
+
+

@@ -6,6 +6,16 @@
     <title>Ma Bibliothèque BD</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Protection contre le copier-coller -->
+    <script>
+        // Bloquer l'inspection du code (F12, Ctrl+Shift+I)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Écran d'accès avec code -->
@@ -14,7 +24,7 @@
             <h2>Accès à la bibliothèque BD</h2>
             <p>Veuillez entrer le code d'accès pour consulter les BDs</p>
             <div class="form-group">
-                <input type="password" id="access-code" placeholder="Entrez le code d'accès" required>
+                <input type="password" id="access-code" placeholder="Entrez le code d'accès" required autocomplete="off">
             </div>
             <button id="login-button">Accéder aux BDs</button>
             <p id="access-error" class="error-message"></p>
@@ -47,7 +57,11 @@
             </div>
         </div>
         <div class="main-content">
-            <div id="pdf-container">
+            <div id="pdf-container" class="not-authenticated">
+                <div class="access-denied-message">
+                    <i class="fas fa-lock fa-3x"></i>
+                    <p>Veuillez entrer le code d'accès pour visualiser ce contenu</p>
+                </div>
                 <iframe id="pdf-frame" style="width:100%;height:100%" src="about:blank" seamless="seamless" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>
             </div>
         </div>
