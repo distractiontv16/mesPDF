@@ -395,3 +395,149 @@ button:active {
         padding: 20px;
     }
 }
+
+/* Styles pour le système d'onglets */
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background-color: transparent;
+    color: #ecf0f1;
+    border: none;
+    border-radius: 4px 4px 0 0;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    width: 48%;
+    opacity: 0.7;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.tab-btn:hover {
+    background-color: rgba(52, 152, 219, 0.3);
+    transform: translateY(-3px);
+    opacity: 1;
+}
+
+.tab-btn.active {
+    background-color: #3498db;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    opacity: 1;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Styles pour l'onglet AVANT-GOÛT */
+.avant-gout-description {
+    color: #bdc3c7;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    font-style: italic;
+}
+
+#avant-gout-content h3 {
+    text-align: center;
+    color: #3498db;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+#avant-gout-list {
+    list-style-type: none;
+    margin-bottom: 20px;
+}
+
+#avant-gout-list li {
+    margin-bottom: 15px;
+    border-left: 3px solid #e74c3c;
+    padding-left: 10px;
+    transition: all 0.3s;
+}
+
+#avant-gout-list li:hover {
+    border-left: 3px solid #3498db;
+    transform: translateX(5px);
+}
+
+#avant-gout-list a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    background-color: rgba(52, 73, 94, 0.6);
+}
+
+#avant-gout-list a:hover {
+    background-color: #34495e;
+}
+
+#avant-gout-list a.active {
+    background-color: #3498db;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Amélioration du responsive */
+@media (max-width: 768px) {
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabs {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .tab-btn {
+        width: 49%;
+        padding: 8px 5px;
+        font-size: 0.75rem;
+    }
+    
+    #avant-gout-content h3 {
+        font-size: 1rem;
+    }
+    
+    .avant-gout-description {
+        font-size: 0.8rem;
+    }
+}
+
+/* Styles pour l'onglet Bibliothèque */
+.biblio-description {
+    color: #bdc3c7;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    font-style: italic;
+}
+
+#bibliotheque-content h3 {
+    text-align: center;
+    color: #3498db;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}

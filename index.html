@@ -38,9 +38,31 @@
     <div class="container">
         <div class="sidebar" id="sidebar">
             <h2>Mes BD</h2>
-            <ul id="pdf-list">
-                <!-- La liste sera chargée depuis le fichier JSON -->
-            </ul>
+            
+            <!-- Système d'onglets -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="bibliotheque">Bibliothèque</button>
+                <button class="tab-btn" data-tab="avant-gout">AVANT-GOÛT</button>
+            </div>
+            
+            <!-- Contenu de l'onglet Bibliothèque -->
+            <div class="tab-content active" id="bibliotheque-content">
+                <h3>Bibliothèque complète</h3>
+                <p class="biblio-description">Explorez notre collection (hors nouveautés)</p>
+                <ul id="pdf-list">
+                    <!-- La liste sera chargée depuis le fichier JSON -->
+                </ul>
+            </div>
+            
+            <!-- Contenu de l'onglet AVANT-GOÛT -->
+            <div class="tab-content" id="avant-gout-content">
+                <h3>Découvrez en avant-première</h3>
+                <p class="avant-gout-description">Les 4 dernières BD ajoutées à notre collection</p>
+                <ul id="avant-gout-list">
+                    <!-- Les 4 dernières BDs seront chargées ici -->
+                </ul>
+            </div>
+            
             <div class="add-pdf">
                 <h3>Ajouter une BD</h3>
                 <form id="add-pdf-form">

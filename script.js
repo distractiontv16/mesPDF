@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Récupération des éléments du DOM
     const pdfList = document.getElementById('pdf-list');
+    const avantGoutList = document.getElementById('avant-gout-list');
     const pdfFrame = document.getElementById('pdf-frame');
     const pdfContainer = document.getElementById('pdf-container');
     const addPdfForm = document.getElementById('add-pdf-form');
@@ -13,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessCodeInput = document.getElementById('access-code');
     const loginButton = document.getElementById('login-button');
     const accessError = document.getElementById('access-error');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
     
     // Variables pour stocker les données
     let bdData = null;
@@ -21,6 +24,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // S'assurer que l'interface est en mode non-authentifié
     resetAuthenticationState();
+    
+    // Gestion du système d'onglets
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Ne pas permettre le changement d'onglet si non authentifié
+            if (!isAuthenticated) return;
+            
+            const tab = this.getAttribute('data-tab');
+            
+            // Retirer la classe active de tous les boutons et contenus
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Ajouter la classe active au bouton et contenu correspondant
+            this.classList.add('active');
+            document.getElementById(tab + '-content').classList.add('active');
+        });
+    });
     
     // Charger les données depuis le fichier JSON
     fetch('bdlinks.json')
@@ -71,11 +92,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Fermer le menu au clic sur un lien (pour mobile)
-    pdfList.addEventListener('click', function(e) {
-        if (e.target.tagName === 'A' && window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
-            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        }
+    document.querySelectorAll('#pdf-list, #avant-gout-list').forEach(list => {
+        list.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
     });
     
     // Bloquer l'accès au menu contextuel et l'inspection pour rendre plus difficile l'accès aux URLs
@@ -116,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Afficher la liste et charger les BDs
             sidebar.style.visibility = 'visible';
             if (bdData && bdData.bds) {
+                // Charger les BDs dans la bibliothèque (ce qui chargera aussi l'AVANT-GOÛT)
                 loadBdsFromJSON(bdData.bds);
             }
             
@@ -230,15 +254,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const url = pdfUrlInput.value.trim();
         
         if (title && url) {
-            // Ajouter la nouvelle BD à la liste
-            addPdfToList(title, url);
-            
-            // Mettre à jour le fichier JSON (en mode réel, vous auriez besoin d'une API backend pour cela)
+            // Ajouter la nouvelle BD au tableau de données
             if (bdData && bdData.bds) {
                 bdData.bds.push({
                     titre: title,
                     url: url
                 });
+                
+                // Recharger toutes les BDs pour respecter la logique de séparation
+                loadBdsFromJSON(bdData.bds);
                 
                 // En situation réelle, vous feriez un appel API pour sauvegarder dans le fichier JSON
                 // Pour cette démonstration, on utilise le stockage local
@@ -259,16 +283,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Ajouter un écouteur d'événements pour la liste de PDF
-    pdfList.addEventListener('click', function(e) {
+    // Gestion du clic sur les liens dans les deux listes (Bibliothèque et AVANT-GOÛT)
+    function handleBdClick(e, listElement) {
         if (!isAuthenticated) return; // Ne rien faire si non authentifié
         
         if (e.target.tagName === 'A') {
             e.preventDefault();
             
-            // Retirer la classe active de tous les liens
-            const links = pdfList.querySelectorAll('a');
-            links.forEach(link => link.classList.remove('active'));
+            // Retirer la classe active de tous les liens dans les deux listes
+            document.querySelectorAll('#pdf-list a, #avant-gout-list a').forEach(link => {
+                link.classList.remove('active');
+            });
             
             // Ajouter la classe active au lien cliqué
             e.target.classList.add('active');
@@ -287,9 +312,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
+    }
+    
+    // Ajouter l'écouteur au clic sur les deux listes
+    pdfList.addEventListener('click', function(e) {
+        handleBdClick(e, pdfList);
     });
     
-    // Fonction pour ajouter une BD à la liste
+    avantGoutList.addEventListener('click', function(e) {
+        handleBdClick(e, avantGoutList);
+    });
+    
+    // Fonction pour ajouter une BD à la liste principale
     function addPdfToList(title, url) {
         const li = document.createElement('li');
         const a = document.createElement('a');
@@ -314,14 +348,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Fonction pour charger les BDs depuis le JSON
+    // Fonction pour ajouter une BD à la liste AVANT-GOÛT
+    function addToAvantGout(title, url) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        
+        a.href = '#';
+        a.textContent = title;
+        
+        // Stocker l'URL directement
+        a.setAttribute('data-pdf-url', url);
+        
+        li.appendChild(a);
+        avantGoutList.appendChild(li);
+    }
+    
+    // Fonction pour charger les BDs depuis le JSON dans la bibliothèque
     function loadBdsFromJSON(bds) {
         // Vider la liste actuelle
         pdfList.innerHTML = '';
         
-        // Ajouter chaque BD à la liste
+        // D'abord, on charge les 4 dernières BDs dans l'AVANT-GOÛT
+        loadAvantGoutFromJSON(bds);
+        
+        // Obtenir les IDs des 4 dernières BDs
+        const lastFourBds = bds.slice(-4);
+        const avantGoutUrls = lastFourBds.map(bd => bd.url);
+        
+        // Ajouter chaque BD à la liste principale, sauf celles dans AVANT-GOÛT
         bds.forEach(bd => {
-            addPdfToList(bd.titre, bd.url);
+            // Vérifier si cette BD n'est pas dans l'AVANT-GOÛT
+            if (!avantGoutUrls.includes(bd.url)) {
+                addPdfToList(bd.titre, bd.url);
+            }
+        });
+    }
+    
+    // Fonction pour charger les 4 dernières BDs dans l'onglet AVANT-GOÛT
+    function loadAvantGoutFromJSON(bds) {
+        // Vider la liste actuelle
+        avantGoutList.innerHTML = '';
+        
+        // Obtenir les 4 dernières BDs
+        const lastFourBds = bds.slice(-4).reverse();
+        
+        // Ajouter les 4 dernières BDs à la liste
+        lastFourBds.forEach(bd => {
+            addToAvantGout(bd.titre, bd.url);
         });
     }
     
